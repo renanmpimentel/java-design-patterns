@@ -38,22 +38,22 @@ class DefaultCircuitBreakerTest {
   void testEvaluateState() {
     var circuitBreaker = new DefaultCircuitBreaker(null, 1, 1, 60_000_000_000L);
     // Right now, failureCount<failureThreshold, so state should be closed
-    assertEquals(circuitBreaker.getState(), "CLOSED");
+    assertEquals("CLOSED", circuitBreaker.getState());
     circuitBreaker.failureCount = 4;
     circuitBreaker.lastFailureTime = System.nanoTime();
     circuitBreaker.evaluateState();
     // Since failureCount>failureThreshold, and lastFailureTime is nearly equal to current time,
     // the retry period has not elapsed yet, so state should be open
-    assertEquals(circuitBreaker.getState(), "OPEN");
+    assertEquals("OPEN", circuitBreaker.getState());
     // Since failureCount>failureThreshold, and lastFailureTime is older than the retry period,
     // state should be half-open
     circuitBreaker.lastFailureTime = System.nanoTime() - 120_000_000_000L;
     circuitBreaker.evaluateState();
-    assertEquals(circuitBreaker.getState(), "HALF_OPEN");
+    assertEquals("HALF_OPEN", circuitBreaker.getState());
     // Now set it back again to closed to test idempotency
     circuitBreaker.failureCount = 0;
     circuitBreaker.evaluateState();
-    assertEquals(circuitBreaker.getState(), "CLOSED");
+    assertEquals("CLOSED", circuitBreaker.getState());
   }
 
   @Test
